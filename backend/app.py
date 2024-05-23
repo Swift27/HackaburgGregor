@@ -15,7 +15,7 @@ def api():
     data = {"message": "Hello, world!"}
     return jsonify(data)
 
-@app.route('/api/connect_wifi', methods=['POST'])
+@app.route('/connect-wifi', methods=['POST'])
 def connect_wifi():
     data = request.get_json()
     ssid = data.get('ssid')

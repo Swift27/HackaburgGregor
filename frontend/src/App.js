@@ -18,7 +18,7 @@ function App() {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    fetch("/connect_wifi", {
+    fetch("/connect-wifi", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
