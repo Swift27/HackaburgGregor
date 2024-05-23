@@ -47,8 +47,8 @@ def current_ssid():
     # On macOS:
     # result = subprocess.run(['/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport', '-I'], capture_output=True, text=True)
     # for line in result.stdout.split('\n'):
-    #    if ' SSID' in line:
-    #        return jsonify(line.split(': ')[1])
+    #     if ' SSID' in line:
+    #         return jsonify(line.split(': ')[1])
     # return None
 
 if __name__ == '__main__':
