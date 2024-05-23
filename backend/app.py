@@ -26,7 +26,7 @@ def connect_wifi():
     subprocess.run(['nmcli', 'connection', 'down', 'id', 'accesspoint'])
 
     # Try to connect to the WiFi network using wlan1
-    result = subprocess.run(['nmcli', 'dev', 'wifi', 'connect', ssid, 'password', password, 'ifname', 'wlan1'], capture_output=True, text=True)
+    result = subprocess.run(['nmcli', 'dev', 'wifi', 'connect', ssid, 'password', password, 'ifname', 'wlan0'], capture_output=True, text=True)
 
     time.sleep(10)
 
