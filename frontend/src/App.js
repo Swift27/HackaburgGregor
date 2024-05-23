@@ -10,8 +10,8 @@ function App() {
     fetch("/get-current-ssid")
       .then((response) => response.json())
       .then((data) => {
-        setCurrentSsid(data);
-        console.log(data);
+        setCurrentSsid(data.ssid);
+        console.log(data.ssid);
       });
   }, []);
 
