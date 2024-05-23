@@ -13,8 +13,8 @@ function App() {
     fetch("http://localhost:5000/get-current-ssid")
       .then((response) => response.json())
       .then((data) => {
-        setCurrentSsid(data);
-        console.log(data);
+        setCurrentSsid(data.ssid);
+        console.log(data.ssid);
       });
   }, []);
 
