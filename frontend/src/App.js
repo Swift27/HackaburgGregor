@@ -17,6 +17,7 @@ function App() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    console.log("Wifi Connection");
 
     fetch("/connect-wifi", {
       method: "POST",
