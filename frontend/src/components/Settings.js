@@ -14,7 +14,7 @@ function Settings({ current_ssid }) {
     event.preventDefault();
     console.log("Connecting to Wifi...");
 
-    fetch("/connect-wifi", {
+    fetch("http://localhost:5000/connect-wifi", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -32,7 +32,7 @@ function Settings({ current_ssid }) {
 
   // Getting all wifi networks available
   useEffect(() => {
-    fetch("/get-wifi-networks")
+    fetch("http://localhost:5000/get-wifi-networks")
       .then((response) => response.json())
       .then((data) => {
         setWifiNetworks(data);
