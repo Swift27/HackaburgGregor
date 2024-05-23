@@ -1,63 +1,37 @@
 import React, { useEffect, useState } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+
+import NavBar from "./components/NavBar";
+import Settings from "./components/Settings";
+import History from "./components/History";
 
 function App() {
-  const [ssid, setSsid] = useState("");
-  const [password, setPassword] = useState("");
-
   const [current_ssid, setCurrentSsid] = useState("");
 
+  // Get the current ssid
   useEffect(() => {
     fetch("/get-current-ssid")
       .then((response) => response.json())
       .then((data) => {
-        setCurrentSsid(data.ssid);
-        console.log(data.ssid);
+        setCurrentSsid(data);
+        console.log(data);
       });
   }, []);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log("Wifi Connection");
-
-    fetch("/connect-wifi", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ ssid, password }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Success:", data);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  };
-
   return (
-    <div className="App">
-      <h1>Current SSID: {current_ssid}</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          SSID:
-          <input
-            type="text"
-            value={ssid}
-            onChange={(e) => setSsid(e.target.value)}
+    <Router>
+      <div className="App">
+        <NavBar current_ssid={current_ssid} />
+        <Routes>
+          <Route path="/" element={<Settings current_ssid={current_ssid} />} />
+          <Route
+            path="/settings"
+            element={<Settings current_ssid={current_ssid} />}
           />
-        </label>
-        <label>
-          Password:
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </label>
-        <button type="submit">Connect</button>
-      </form>
-    </div>
+          <Route path="/history" element={<History />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 

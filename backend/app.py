@@ -45,11 +45,35 @@ def current_ssid():
     return jsonify({'ssid': ssid})
 
     # On macOS:
-    # result = subprocess.run(['/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport', '-I'], capture_output=True, text=True)
-    # for line in result.stdout.split('\n'):
-    #     if ' SSID' in line:
-    #         return jsonify(line.split(': ')[1])
-    # return None
+    """
+    result = subprocess.run(['/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport', '-I'], capture_output=True, text=True)
+    for line in result.stdout.split('\n'):
+        if ' SSID' in line:
+            return jsonify(line.split(': ')[1])
+    return None
+    """
+    
+@app.route('/get-wifi-networks', methods=['GET'])
+def wifi_networks():
+    # On macOS:
+    """
+    result = subprocess.run(['/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport', '-s'], capture_output=True, text=True)
+    networks = []
+    lines = result.stdout.split('\n')
+    for line in lines[1:]:
+        if line:
+            networks.append(line.split()[0])
+    return jsonify(networks)
+    """
+
+    # On raspberry:
+    result = subprocess.run(['sudo', 'iwlist', 'wlan0', 'scan'], capture_output=True, text=True)
+    networks = []
+    for line in result.stdout.split('\n'):
+        if 'ESSID' in line:
+            networks.append(line.split('"')[1])
+    return jsonify(networks)
+
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0")

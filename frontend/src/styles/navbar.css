@@ -1,0 +1,43 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  background-color: gray;
+  padding: 0 5em;
+}
+
+.navbar-left-section {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2em;
+}
+
+.navbar-right-section {
+  align-self: center;
+}
+
+.navbar-links {
+  display: flex;
+  flex-direction: row;
+  gap: 2em;
+}
+
+.navbar ul {
+  list-style: none;
+}
+
+.navbar-links a {
+  color: black;
+  text-decoration: none;
+}
+
+.navbar-links a:hover {
+  color: white;
+}
+
+.active {
+  color: white;
+  background-color: white;
+}
