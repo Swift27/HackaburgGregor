@@ -18,12 +18,24 @@ function App() {
       });
   }, []);
 
+  const handleNetworkChange = (new_ssid) => {
+    setCurrentSsid(new_ssid);
+  };
+
   return (
     <Router>
       <div className="App">
         <NavBar current_ssid={current_ssid} />
         <Routes>
-          <Route path="/" element={<Settings current_ssid={current_ssid} />} />
+          <Route
+            path="/"
+            element={
+              <Settings
+                current_ssid={current_ssid}
+                onNetworkChange={handleNetworkChange}
+              />
+            }
+          />
           <Route
             path="/settings"
             element={<Settings current_ssid={current_ssid} />}

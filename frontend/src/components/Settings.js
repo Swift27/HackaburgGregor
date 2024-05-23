@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 
 import "../styles/settings.css";
 
-function Settings({ current_ssid }) {
+function Settings({ current_ssid, onNetworkChange }) {
   const [ssid, setSsid] = useState("");
   const [password, setPassword] = useState("");
   const [wifiNetworks, setWifiNetworks] = useState([]);
@@ -28,6 +28,7 @@ function Settings({ current_ssid }) {
       .catch((error) => {
         console.error("Error:", error);
       });
+    onNetworkChange(ssid);
   };
 
   // Getting all wifi networks available
