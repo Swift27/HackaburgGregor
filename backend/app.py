@@ -45,13 +45,11 @@ def current_ssid():
     return jsonify({'ssid': ssid})
 
     # On macOS:
-    """
-    result = subprocess.run(['/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport', '-I'], capture_output=True, text=True)
-    for line in result.stdout.split('\n'):
-        if ' SSID' in line:
-            return jsonify(line.split(': ')[1])
-    return None
-    """
+    # result = subprocess.run(['/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport', '-I'], capture_output=True, text=True)
+    # for line in result.stdout.split('\n'):
+    #     if ' SSID' in line:
+    #         return jsonify(line.split(': ')[1])
+    # return None
     
 @app.route('/get-wifi-networks', methods=['GET'])
 def wifi_networks():
@@ -73,6 +71,7 @@ def wifi_networks():
         if 'ESSID' in line:
             networks.append(line.split('"')[1])
     return jsonify(networks)
+
 
 
 if __name__ == '__main__':

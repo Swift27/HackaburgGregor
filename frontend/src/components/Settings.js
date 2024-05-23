@@ -8,6 +8,24 @@ function Settings({ current_ssid, onNetworkChange }) {
   const [password, setPassword] = useState("");
   const [wifiNetworks, setWifiNetworks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [userData, setUserData] = useState({
+    firstName: "",
+    lastName: "",
+    phoneNumber: "",
+    address: "",
+    houseNumber: "",
+    postalCode: "",
+    city: "",
+    country: "",
+  });
+
+  // Updating the user data on input changes
+  const handleInputChange = (event) => {
+    setUserData({
+      ...userData,
+      [event.target.name]: event.target.value,
+    });
+  };
 
   // Handler for conneting to the selected wifi
   const connectWifiHandler = (event) => {
@@ -40,6 +58,23 @@ function Settings({ current_ssid, onNetworkChange }) {
         setIsLoading(false);
       });
   }, []);
+
+  const sendUserData = (event) => {
+    console.log("Sending user data...");
+    event.preventDefault();
+
+    fetch("http://192.168.220.183:8080/stuff/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
+    })
+      .then((response) => console.log(response))
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
 
   return (
     <div className="content">
@@ -81,36 +116,83 @@ function Settings({ current_ssid, onNetworkChange }) {
 
       <br />
 
-      <section>
-        <h2>Benutzerdaten</h2>
-        <label>
-          Vorname:
-          <input type="text" />
-        </label>
-        <label>
-          Nachname:
-          <input type="text" />
-        </label>
-        <label>
-          Telefonnummer:
-          <input type="text" />
-        </label>
-        <label>
-          Adresse:
-          <input type="text" />
-        </label>
-        <label>
-          Hausnummer:
-          <input type="text" />
-        </label>
-        <label>
-          Postleitzahl:
-          <input type="text" />
-        </label>
-        <label>
-          Land:
-          <input type="text" />
-        </label>
+      <section className="user-data">
+        <form onSubmit={sendUserData}>
+          <h2>Benutzerdaten</h2>
+          <label>
+            Vorname:
+            <input
+              type="text"
+              name="firstName"
+              value={userData.firstName}
+              onChange={handleInputChange}
+            />
+          </label>
+          <label>
+            Nachname:
+            <input
+              type="text"
+              name="lastName"
+              value={userData.lastName}
+              onChange={handleInputChange}
+            />
+          </label>
+          <label>
+            Telefonnummer:
+            <input
+              type="text"
+              name="phoneNumber"
+              value={userData.phoneNumber}
+              onChange={handleInputChange}
+            />
+          </label>
+          <label>
+            Adresse:
+            <input
+              type="text"
+              name="address"
+              value={userData.address}
+              onChange={handleInputChange}
+            />
+          </label>
+          <label>
+            Hausnummer:
+            <input
+              type="text"
+              name="houseNumber"
+              value={userData.houseNumber}
+              onChange={handleInputChange}
+            />
+          </label>
+          <label>
+            Postleitzahl:
+            <input
+              type="text"
+              name="postalCode"
+              value={userData.postalCode}
+              onChange={handleInputChange}
+            />
+          </label>
+          <label>
+            Stadt:
+            <input
+              type="text"
+              name="city"
+              value={userData.city}
+              onChange={handleInputChange}
+            />
+          </label>
+          <label>
+            Land:
+            <input
+              type="text"
+              name="country"
+              value={userData.country}
+              onChange={handleInputChange}
+            />
+          </label>
+          <button type="submit">Send</button>
+        </form>
       </section>
     </div>
   );
