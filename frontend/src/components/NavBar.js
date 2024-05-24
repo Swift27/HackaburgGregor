@@ -6,14 +6,16 @@ function NavBar({ current_ssid }) {
   return (
     <div className="navbar">
       <div className="navbar-left-section">
-        <h1 className="title">GrannyGadget</h1>
+        <h1 className="title">SCAM</h1>
         <ul className="navbar-links">
           <CustomLink to="/settings">Settings</CustomLink>
           <CustomLink to="/history">History</CustomLink>
         </ul>
       </div>
       <div className="navbar-right-section">
-        <p>Connected Wifi: {current_ssid}</p>
+        <p>
+          Verbundenes Netzwerk: {current_ssid !== "" ? current_ssid : "Keins"}
+        </p>
       </div>
     </div>
   );

@@ -3,15 +3,15 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  background-color: gray;
-  padding: 0 5em;
+  background-color: var(--light-gray);
+  padding: 2em 5em;
 }
 
 .navbar-left-section {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 2em;
+  gap: 5em;
 }
 
 .navbar-right-section {
@@ -28,16 +28,25 @@
   list-style: none;
 }
 
+.navbar h1 {
+  font-size: 2rem;
+  font-weight: 500;
+}
+
 .navbar-links a {
-  color: black;
+  color: white;
   text-decoration: none;
+  font-size: 1.25rem;
+}
+
+.navbar p {
+  font-size: 1.25rem;
 }
 
 .navbar-links a:hover {
-  color: white;
+  color: var(--light-blue);
 }
 
 .active {
-  color: white;
-  background-color: white;
+  color: var(--light-blue);
 }

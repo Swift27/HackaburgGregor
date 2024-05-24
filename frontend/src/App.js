@@ -5,6 +5,8 @@ import NavBar from "./components/NavBar";
 import Settings from "./components/Settings";
 import History from "./components/History";
 
+import "./index.css";
+
 function App() {
   const [current_ssid, setCurrentSsid] = useState("");
 
@@ -13,8 +15,8 @@ function App() {
     fetch("http://localhost:5000/get-current-ssid")
       .then((response) => response.json())
       .then((data) => {
-        setCurrentSsid(data.ssid);
-        console.log(data.ssid);
+        setCurrentSsid(data);
+        console.log(data);
       });
   }, []);
 
