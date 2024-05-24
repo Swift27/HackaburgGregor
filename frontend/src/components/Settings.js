@@ -9,7 +9,6 @@ function Settings({ current_ssid, onNetworkChange }) {
   const [wifiNetworks, setWifiNetworks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [userExists, setUserExists] = useState(false);
-  const [connectWifiCalled, setConnectWifiCalled] = useState(false);
   const [userInputData, setUserInputData] = useState({
     forename: "",
     surname: "",
