@@ -114,7 +114,7 @@ def get_data_with_coordinates():
     surname = data.get('surname')
     phoneNumber = data.get('phoneNumber')
 
-    response = requests.get(f'https://maps.googleapis.com/maps/api/geocode/json?address={street}+{houseNumber}+{postalCode}+{city}+{country}&key=AIzaSyBcFNLELRqXeRPIzmNvv3MK_cNYkQtNZMU')
+    response = requests.get(f'https://maps.googleapis.com/maps/api/geocode/json?address={street}+{houseNumber}+{postalCode}+{city}+{country}&key=')
     resp_json_payload = response.json()
 
     # Extract lat and lng from location
