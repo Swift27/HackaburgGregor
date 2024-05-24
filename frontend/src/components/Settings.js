@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { toast, Toaster } from "sonner";
+
 import "../styles/settings.css";
 
 function Settings({ current_ssid, onNetworkChange }) {
@@ -6,6 +8,7 @@ function Settings({ current_ssid, onNetworkChange }) {
   const [password, setPassword] = useState("");
   const [wifiNetworks, setWifiNetworks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [userExists, setUserExists] = useState(false);
   const [userInputData, setUserInputData] = useState({
     forename: "",
     surname: "",
@@ -17,12 +20,21 @@ function Settings({ current_ssid, onNetworkChange }) {
     country: "",
   });
 
+  // Checking if user_data.json exists
+  useEffect(() => {
+    fetch("http://raspberrypi.local:5000/user-exists")
+      .then((response) => response.json())
+      .then((data) => setUserExists(data.exists));
+  }, []);
+
   // Setting the user data to the stored data
   useEffect(() => {
-    fetch("http://localhost:5000/get-user-data")
+    fetch("http://raspberrypi.local:5000/get-user-data")
       .then((response) => response.json())
-      .then((data) => setUserInputData(data));
-  }, []);
+      .then((data) => {
+        userExists && setUserInputData(data);
+      });
+  }, [userExists]);
 
   // Updating the userData when changing the input fields
   const handleInputChange = (event) => {
@@ -35,7 +47,7 @@ function Settings({ current_ssid, onNetworkChange }) {
   // POST request to connect to the selected wifi network
   const connectWifiHandler = (event) => {
     event.preventDefault();
-    fetch("http://localhost:5000/connect-wifi", {
+    fetch("http://raspberrypi.local:5000/connect-wifi", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ssid, password }),
@@ -48,7 +60,7 @@ function Settings({ current_ssid, onNetworkChange }) {
 
   // GET request to get the available wifi networks
   useEffect(() => {
-    fetch("http://localhost:5000/get-wifi-networks")
+    fetch("http://raspberrypi.local:5000/get-wifi-networks")
       .then((response) => response.json())
       .then((data) => {
         setWifiNetworks(data);
@@ -70,14 +82,9 @@ function Settings({ current_ssid, onNetworkChange }) {
       body: jsonUserInputData,
     };
 
-    // Send to app.py to write to txt file
-    fetch("http://localhost:5000/send-user-data", postMethodUserInput)
-      .then((response) => console.log(response))
-      .catch((error) => console.error("Error:", error));
-
     // Converting the user address to coordinates
     fetch(
-      "http://localhost:5000/get-data-with-coordinates",
+      "http://raspberrypi.local:5000/get-data-with-coordinates",
       postMethodUserInput
     )
       .then((response) => response.json())
@@ -95,9 +102,20 @@ function Settings({ current_ssid, onNetworkChange }) {
 
         // Send to Henkriks server
         fetch("http://192.168.220.183:8080/general/addperson", postMethodHenrik)
-          .then((response) => console.log(response))
+          .then((response) => {
+            setUserInputData({
+              ...userInputData,
+              [id]: response.id,
+            });
+            console.log(response);
+          })
           .catch((error) => console.error("Error:", error));
       })
+      .catch((error) => console.error("Error:", error));
+
+    // Send to app.py to write to json file
+    fetch("http://raspberrypi.local:5000/send-user-data", postMethodUserInput)
+      .then((response) => console.log(response))
       .catch((error) => console.error("Error:", error));
   };
 
@@ -141,7 +159,12 @@ function Settings({ current_ssid, onNetworkChange }) {
               onChange={(event) => setPassword(event.target.value)}
             />
           </div>
-          <button>Verbinden</button>
+          <button
+            onClick={() => toast.success(`You are conneting to ${ssid}!`)}
+          >
+            <Toaster richColors />
+            Verbinden
+          </button>
         </form>
       </section>
       <br />
@@ -172,7 +195,7 @@ function Settings({ current_ssid, onNetworkChange }) {
                 />
               </label>
               <label>
-                Phone Number:
+                Telefonnummer:
                 <input
                   type="text"
                   name="phoneNumber"
@@ -234,7 +257,16 @@ function Settings({ current_ssid, onNetworkChange }) {
                 />
               </label>
             </div>
-            <button type="submit">Bearbeiten</button>
+            <button
+              type="submit"
+              onClick={() => {
+                toast.success("Your data has been updated!");
+                setUserExists(true);
+              }}
+            >
+              {userExists ? "Nutzerdaten aktualisieren" : "Nutzer hinzufügen"}
+              <Toaster richColors />
+            </button>
           </div>
         </form>
       </section>

@@ -4,6 +4,7 @@ import subprocess
 import time
 import json
 import requests
+import os
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -75,14 +76,12 @@ def wifi_networks():
 
 
     # On raspberry:
-
     result = subprocess.run(['sudo', 'iwlist', 'wlan0', 'scan'], capture_output=True, text=True)
     networks = []
     for line in result.stdout.split('\n'):
         if 'ESSID' in line:
             networks.append(line.split('"')[1])
     return jsonify(networks)
-
 
 
 @app.route('/send-user-data', methods=['POST'])
@@ -97,9 +96,11 @@ def send_user_data():
 
 @app.route('/get-user-data', methods=['GET'])
 def get_user_data():
-    with open('user_data.json', 'r') as f:
-        user_data = json.load(f)
-    return jsonify(user_data)
+    if os.path.isfile('user_data.json'):
+        with open('user_data.json', 'r') as f:
+            user_data = json.load(f)
+        return jsonify(user_data)
+    return jsonify({'message': 'No user data found.'})
 
 @app.route('/get-data-with-coordinates', methods=['POST'])
 def get_data_with_coordinates():
@@ -131,6 +132,13 @@ def get_data_with_coordinates():
     }
     return jsonify(combined_json)
 
+@app.route("/user-exists", methods=['GET'])
+def user_exists():
+    if os.path.isfile('user_data.json'):
+        return jsonify({'exists': True})
+    return jsonify({'exists': False})
+
+
 
 if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0")
+    app.run(debug=True)
