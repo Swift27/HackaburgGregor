@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import subprocess
 import time
+import json
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -20,7 +21,11 @@ def connect_wifi():
     data = request.get_json()
     ssid = data.get('ssid')
     password = data.get('password')
-    print(f'SSID: {ssid}, Password: {password}')
+    print(ssid, password)
+
+    # Write data to json fild
+    with open('wifi_data.json', 'w') as f:
+        json.dump(data, f)
 
     # Turn off the access point
     subprocess.run(['nmcli', 'connection', 'down', 'id', 'accesspoint'])
@@ -40,16 +45,20 @@ def connect_wifi():
 @app.route('/get-current-ssid', methods=['GET'])
 def current_ssid():
     # On raspberry: 
+
     result = subprocess.run(['iwgetid', '-r'], capture_output=True, text=True)
     ssid = result.stdout.strip()
     return jsonify({'ssid': ssid})
 
+
     # On macOS:
-    # result = subprocess.run(['/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport', '-I'], capture_output=True, text=True)
-    # for line in result.stdout.split('\n'):
-    #     if ' SSID' in line:
-    #         return jsonify(line.split(': ')[1])
-    # return None
+    """
+    result = subprocess.run(['/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport', '-I'], capture_output=True, text=True)
+    for line in result.stdout.split('\n'):
+        if ' SSID' in line:
+            return jsonify(line.split(': ')[1])
+    return None
+    """
     
 @app.route('/get-wifi-networks', methods=['GET'])
 def wifi_networks():
@@ -65,12 +74,30 @@ def wifi_networks():
     """
 
     # On raspberry:
+
     result = subprocess.run(['sudo', 'iwlist', 'wlan0', 'scan'], capture_output=True, text=True)
     networks = []
     for line in result.stdout.split('\n'):
         if 'ESSID' in line:
             networks.append(line.split('"')[1])
     return jsonify(networks)
+
+
+@app.route('/send-user-data', methods=['POST'])
+def send_user_data():
+    user_data = request.get_json()
+    print(user_data)
+
+    with open('user_data.json', 'w') as f:
+        json.dump(user_data, f)
+
+    return jsonify({'message': 'User data saved.'})
+
+@app.route('/get-user-data', methods=['GET'])
+def get_user_data():
+    with open('user_data.json', 'r') as f:
+        user_data = json.load(f)
+    return jsonify(user_data)
 
 
 

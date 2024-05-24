@@ -1,6 +1,4 @@
-import React from "react";
-import { useState, useEffect } from "react";
-
+import React, { useState, useEffect } from "react";
 import "../styles/settings.css";
 
 function Settings({ current_ssid, onNetworkChange }) {
@@ -9,17 +7,21 @@ function Settings({ current_ssid, onNetworkChange }) {
   const [wifiNetworks, setWifiNetworks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [userData, setUserData] = useState({
-    firstName: "",
-    lastName: "",
+    forename: "",
+    surname: "",
+    coordinate_lat: "",
+    coordinate_long: "",
     phoneNumber: "",
-    address: "",
-    houseNumber: "",
-    postalCode: "",
-    city: "",
-    country: "",
   });
 
-  // Updating the user data on input changes
+  // Setting the user data to the stored data
+  useEffect(() => {
+    fetch("http://localhost:5000/get-user-data")
+      .then((response) => response.json())
+      .then((data) => setUserData(data));
+  }, []);
+
+  // Updating the userData when changing the input fields
   const handleInputChange = (event) => {
     setUserData({
       ...userData,
@@ -27,29 +29,21 @@ function Settings({ current_ssid, onNetworkChange }) {
     });
   };
 
-  // Handler for conneting to the selected wifi
+  // POST request to connect to the selected wifi network
   const connectWifiHandler = (event) => {
     event.preventDefault();
-    console.log("Connecting to Wifi...");
-
     fetch("http://localhost:5000/connect-wifi", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ssid, password }),
     })
       .then((response) => response.json())
-      .then((data) => {
-        console.log("Success:", data);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+      .then((data) => console.log("Success:", data))
+      .catch((error) => console.error("Error:", error));
     onNetworkChange(ssid);
   };
 
-  // Getting all wifi networks available
+  // GET request to get the available wifi networks
   useEffect(() => {
     fetch("http://localhost:5000/get-wifi-networks")
       .then((response) => response.json())
@@ -59,29 +53,32 @@ function Settings({ current_ssid, onNetworkChange }) {
       });
   }, []);
 
+  // POST request to send the user data
+  // 1. Send to Henkriks server
+  // 2. Send to app.py to write to txt file
   const sendUserData = (event) => {
-    console.log("Sending user data...");
     event.preventDefault();
+    const jsonUserData = JSON.stringify(userData);
+    const headers = { "Content-Type": "application/json" };
+    const postMethod = { method: "POST", headers, body: jsonUserData };
 
-    fetch("http://192.168.220.183:8080/stuff/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(userData),
-    })
+    // Send to Henkriks server
+    /*
+    fetch("http://192.168.220.183:8080/general/addperson", postMethod)
       .then((response) => console.log(response))
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+      .catch((error) => console.error("Error:", error));
+    */
+
+    // Send to app.py to write to txt file
+    fetch("http://localhost:5000/send-user-data", postMethod)
+      .then((response) => console.log(response))
+      .catch((error) => console.error("Error:", error));
   };
 
   return (
     <div className="content">
       <h1>Settings</h1>
-
       <br />
-
       <section>
         <h2>Netzwerkeinstellungen</h2>
         <form onSubmit={connectWifiHandler}>
@@ -91,11 +88,9 @@ function Settings({ current_ssid, onNetworkChange }) {
             <p>Loading...</p>
           ) : (
             <select
+              value={ssid !== "" ? ssid : current_ssid}
               name="ssid-select"
-              onChange={(event) => {
-                setSsid(event.target.value);
-                console.log(event.target.value);
-              }}
+              onChange={(event) => setSsid(event.target.value)}
             >
               {wifiNetworks.map((network, index) => (
                 <option key={`${network}-${index}`}>{network}</option>
@@ -113,9 +108,7 @@ function Settings({ current_ssid, onNetworkChange }) {
           <button>Verbinden</button>
         </form>
       </section>
-
       <br />
-
       <section className="user-data">
         <form onSubmit={sendUserData}>
           <h2>Benutzerdaten</h2>
@@ -123,8 +116,8 @@ function Settings({ current_ssid, onNetworkChange }) {
             Vorname:
             <input
               type="text"
-              name="firstName"
-              value={userData.firstName}
+              name="forename"
+              value={userData.forename}
               onChange={handleInputChange}
             />
           </label>
@@ -132,62 +125,35 @@ function Settings({ current_ssid, onNetworkChange }) {
             Nachname:
             <input
               type="text"
-              name="lastName"
-              value={userData.lastName}
+              name="surname"
+              value={userData.surname}
               onChange={handleInputChange}
             />
           </label>
           <label>
-            Telefonnummer:
+            Coordinate Lat:
+            <input
+              type="text"
+              name="coordinate_lat"
+              value={userData.coordinate_lat}
+              onChange={handleInputChange}
+            />
+          </label>
+          <label>
+            Coordinate Long:
+            <input
+              type="text"
+              name="coordinate_long"
+              value={userData.coordinate_long}
+              onChange={handleInputChange}
+            />
+          </label>
+          <label>
+            Phone Number:
             <input
               type="text"
               name="phoneNumber"
               value={userData.phoneNumber}
-              onChange={handleInputChange}
-            />
-          </label>
-          <label>
-            Adresse:
-            <input
-              type="text"
-              name="address"
-              value={userData.address}
-              onChange={handleInputChange}
-            />
-          </label>
-          <label>
-            Hausnummer:
-            <input
-              type="text"
-              name="houseNumber"
-              value={userData.houseNumber}
-              onChange={handleInputChange}
-            />
-          </label>
-          <label>
-            Postleitzahl:
-            <input
-              type="text"
-              name="postalCode"
-              value={userData.postalCode}
-              onChange={handleInputChange}
-            />
-          </label>
-          <label>
-            Stadt:
-            <input
-              type="text"
-              name="city"
-              value={userData.city}
-              onChange={handleInputChange}
-            />
-          </label>
-          <label>
-            Land:
-            <input
-              type="text"
-              name="country"
-              value={userData.country}
               onChange={handleInputChange}
             />
           </label>
@@ -199,28 +165,3 @@ function Settings({ current_ssid, onNetworkChange }) {
 }
 
 export default Settings;
-
-/*
-<div className="content">
-      <h1>Current SSID: {current_ssid}</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          SSID:
-          <input
-            type="text"
-            value={ssid}
-            onChange={(e) => setSsid(e.target.value)}
-          />
-        </label>
-        <label>
-          Password:
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </label>
-        <button type="submit">Connect</button>
-      </form>
-    </div>
-*/
