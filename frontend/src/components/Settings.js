@@ -23,14 +23,14 @@ function Settings({ current_ssid, onNetworkChange }) {
 
   // Checking if user_data.json exists
   useEffect(() => {
-    fetch("http://raspberrypi.local:5000/user-exists")
+    fetch("http://localhost:5000/user-exists")
       .then((response) => response.json())
       .then((data) => setUserExists(data.exists));
   }, []);
 
   // Setting the user data to the stored data
   useEffect(() => {
-    fetch("http://raspberrypi.local:5000/get-user-data")
+    fetch("http://localhost:5000/get-user-data")
       .then((response) => response.json())
       .then((data) => {
         userExists && setUserInputData(data);
@@ -48,7 +48,7 @@ function Settings({ current_ssid, onNetworkChange }) {
   // POST request to connect to the selected wifi network
   const connectWifiHandler = (event) => {
     event.preventDefault();
-    fetch("http://raspberrypi.local:5000/connect-wifi", {
+    fetch("http://localhost:5000/connect-wifi", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ssid, password }),
@@ -61,7 +61,7 @@ function Settings({ current_ssid, onNetworkChange }) {
 
   // GET request to get the available wifi networks
   useEffect(() => {
-    fetch("http://raspberrypi.local:5000/get-wifi-networks")
+    fetch("http://localhost:5000/get-wifi-networks")
       .then((response) => response.json())
       .then((data) => {
         setWifiNetworks(data);
@@ -85,7 +85,7 @@ function Settings({ current_ssid, onNetworkChange }) {
 
     // Converting the user address to coordinates
     fetch(
-      "http://raspberrypi.local:5000/get-data-with-coordinates",
+      "http://localhost:5000/get-data-with-coordinates",
       postMethodUserInput
     )
       .then((response) => response.json())

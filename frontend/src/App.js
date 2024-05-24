@@ -12,7 +12,7 @@ function App() {
 
   // Get the current ssid
   useEffect(() => {
-    fetch("http://raspberrypi.local:5000/get-current-ssid")
+    fetch("http://localhost:5000/get-current-ssid")
       .then((response) => response.json())
       .then((data) => {
         setCurrentSsid(data.ssid);
