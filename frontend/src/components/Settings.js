@@ -9,6 +9,7 @@ function Settings({ current_ssid, onNetworkChange }) {
   const [wifiNetworks, setWifiNetworks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [userExists, setUserExists] = useState(false);
+  const [connectWifiCalled, setConnectWifiCalled] = useState(false);
   const [userInputData, setUserInputData] = useState({
     forename: "",
     surname: "",
@@ -18,6 +19,7 @@ function Settings({ current_ssid, onNetworkChange }) {
     postalCode: "",
     city: "",
     country: "",
+    id: "",
   });
 
   // Checking if user_data.json exists
@@ -102,12 +104,13 @@ function Settings({ current_ssid, onNetworkChange }) {
 
         // Send to Henkriks server
         fetch("http://192.168.220.183:8080/general/addperson", postMethodHenrik)
-          .then((response) => {
+          .then((response) => response.json()) // Convert the response to JSON
+          .then((data) => {
             setUserInputData({
               ...userInputData,
-              [id]: response.id,
+              id: data.id, // Use the id from the data
             });
-            console.log(response);
+            console.log(data);
           })
           .catch((error) => console.error("Error:", error));
       })
