@@ -110,15 +110,29 @@ function Settings({ current_ssid, onNetworkChange }) {
               ...userInputData,
               id: data.id, // Use the id from the data
             });
-            console.log(data);
+
+            // Prepare the options for the fetch call to /send-user-data
+            let postMethodUserInput = {
+              method: "POST",
+              headers: {
+                "Content-type": "application/json; charset=UTF-8",
+              },
+              body: JSON.stringify({
+                ...userInputData,
+                id: data.id, // Use the id from the data
+              }), // Use the updated userInputData
+            };
+
+            // Send to app.py to write to json file
+            fetch(
+              "http://raspberrypi.local:5000/send-user-data",
+              postMethodUserInput
+            )
+              .then((response) => console.log(response))
+              .catch((error) => console.error("Error:", error));
           })
           .catch((error) => console.error("Error:", error));
       })
-      .catch((error) => console.error("Error:", error));
-
-    // Send to app.py to write to json file
-    fetch("http://raspberrypi.local:5000/send-user-data", postMethodUserInput)
-      .then((response) => console.log(response))
       .catch((error) => console.error("Error:", error));
   };
 
