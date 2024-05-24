@@ -176,7 +176,7 @@ function Settings({ current_ssid, onNetworkChange }) {
             />
           </div>
           <button
-            onClick={() => toast.success(`You are conneting to ${ssid}!`)}
+            onClick={() => toast.success("You are conneting to the network!")}
           >
             <Toaster richColors />
             Verbinden
