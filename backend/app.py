@@ -46,25 +46,24 @@ def connect_wifi():
 @app.route('/get-current-ssid', methods=['GET'])
 def current_ssid():
     # On raspberry: 
-    """
     result = subprocess.run(['iwgetid', '-r'], capture_output=True, text=True)
     ssid = result.stdout.strip()
     return jsonify({'ssid': ssid})
-    """
 
     # On macOS:
-
+    """
     result = subprocess.run(['/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport', '-I'], capture_output=True, text=True)
     for line in result.stdout.split('\n'):
         if ' SSID' in line:
             return jsonify(line.split(': ')[1])
     return None
+    """
 
     
 @app.route('/get-wifi-networks', methods=['GET'])
 def wifi_networks():
     # On macOS:
-
+    """
     result = subprocess.run(['/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport', '-s'], capture_output=True, text=True)
     networks = []
     lines = result.stdout.split('\n')
@@ -72,17 +71,18 @@ def wifi_networks():
         if line:
             networks.append(line.split()[0])
     return jsonify(networks)
+    """
 
 
     # On raspberry:
-    """
+
     result = subprocess.run(['sudo', 'iwlist', 'wlan0', 'scan'], capture_output=True, text=True)
     networks = []
     for line in result.stdout.split('\n'):
         if 'ESSID' in line:
             networks.append(line.split('"')[1])
     return jsonify(networks)
-    """
+
 
 
 @app.route('/send-user-data', methods=['POST'])
