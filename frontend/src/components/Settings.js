@@ -23,14 +23,14 @@ function Settings({ current_ssid, onNetworkChange }) {
 
   // Checking if user_data.json exists
   useEffect(() => {
-    fetch("http://localhost:5000/user-exists")
+    fetch("/user-exists")
       .then((response) => response.json())
       .then((data) => setUserExists(data.exists));
   }, []);
 
   // Setting the user data to the stored data
   useEffect(() => {
-    fetch("http://localhost:5000/get-user-data")
+    fetch("/get-user-data")
       .then((response) => response.json())
       .then((data) => {
         userExists && setUserInputData(data);
@@ -48,7 +48,7 @@ function Settings({ current_ssid, onNetworkChange }) {
   // POST request to connect to the selected wifi network
   const connectWifiHandler = (event) => {
     event.preventDefault();
-    fetch("http://localhost:5000/connect-wifi", {
+    fetch("/connect-wifi", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ssid, password }),
@@ -61,7 +61,7 @@ function Settings({ current_ssid, onNetworkChange }) {
 
   // GET request to get the available wifi networks
   useEffect(() => {
-    fetch("http://localhost:5000/get-wifi-networks")
+    fetch("/get-wifi-networks")
       .then((response) => response.json())
       .then((data) => {
         setWifiNetworks(data);
@@ -84,10 +84,7 @@ function Settings({ current_ssid, onNetworkChange }) {
     };
 
     // Converting the user address to coordinates
-    fetch(
-      "http://localhost:5000/get-data-with-coordinates",
-      postMethodUserInput
-    )
+    fetch("/get-data-with-coordinates", postMethodUserInput)
       .then((response) => response.json())
       .then((data) => {
         console.log(JSON.stringify(data));
@@ -123,10 +120,7 @@ function Settings({ current_ssid, onNetworkChange }) {
             };
 
             // Send to app.py to write to json file
-            fetch(
-              "http://raspberrypi.local:5000/send-user-data",
-              postMethodUserInput
-            )
+            fetch("/send-user-data", postMethodUserInput)
               .then((response) => console.log(response))
               .catch((error) => console.error("Error:", error));
           })
