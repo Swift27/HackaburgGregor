@@ -4,6 +4,8 @@ import { toast, Toaster } from "sonner";
 import "../styles/settings.css";
 
 function Settings({ current_ssid, onNetworkChange }) {
+  const BASE_URL = "http://raspberrypi.local:5000";
+
   const [ssid, setSsid] = useState("");
   const [password, setPassword] = useState("");
   const [wifiNetworks, setWifiNetworks] = useState([]);
@@ -23,14 +25,14 @@ function Settings({ current_ssid, onNetworkChange }) {
 
   // Checking if user_data.json exists
   useEffect(() => {
-    fetch("/user-exists")
+    fetch(`${BASE_URL}/user-exists`)
       .then((response) => response.json())
       .then((data) => setUserExists(data.exists));
   }, []);
 
   // Setting the user data to the stored data
   useEffect(() => {
-    fetch("/get-user-data")
+    fetch(`${BASE_URL}/get-user-data`)
       .then((response) => response.json())
       .then((data) => {
         userExists && setUserInputData(data);
@@ -48,7 +50,7 @@ function Settings({ current_ssid, onNetworkChange }) {
   // POST request to connect to the selected wifi network
   const connectWifiHandler = (event) => {
     event.preventDefault();
-    fetch("/connect-wifi", {
+    fetch(`${BASE_URL}/connect-wifi`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ssid, password }),
@@ -61,7 +63,7 @@ function Settings({ current_ssid, onNetworkChange }) {
 
   // GET request to get the available wifi networks
   useEffect(() => {
-    fetch("/get-wifi-networks")
+    fetch(`${BASE_URL}/get-wifi-networks`)
       .then((response) => response.json())
       .then((data) => {
         setWifiNetworks(data);
@@ -84,7 +86,7 @@ function Settings({ current_ssid, onNetworkChange }) {
     };
 
     // Converting the user address to coordinates
-    fetch("/get-data-with-coordinates", postMethodUserInput)
+    fetch(`${BASE_URL}/get-data-with-coordinates`, postMethodUserInput)
       .then((response) => response.json())
       .then((data) => {
         console.log(JSON.stringify(data));
@@ -120,7 +122,7 @@ function Settings({ current_ssid, onNetworkChange }) {
             };
 
             // Send to app.py to write to json file
-            fetch("/send-user-data", postMethodUserInput)
+            fetch(`${BASE_URL}/send-user-data`, postMethodUserInput)
               .then((response) => console.log(response))
               .catch((error) => console.error("Error:", error));
           })

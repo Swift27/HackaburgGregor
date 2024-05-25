@@ -9,10 +9,11 @@ import "./index.css";
 
 function App() {
   const [current_ssid, setCurrentSsid] = useState("");
+  const BASE_URL = "http://raspberrypi.local:5000";
 
   // Get the current ssid
   useEffect(() => {
-    fetch("/get-current-ssid")
+    fetch(`${BASE_URL}/get-current-ssid`)
       .then((response) => response.json())
       .then((data) => {
         setCurrentSsid(data.ssid);
