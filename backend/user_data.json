@@ -1,1 +1,11 @@
-{"forename": "Gregor", "surname": "Porsch", "phoneNumber": "01590/6140212", "street": "Kirchfeldallee", "houseNumber": "91", "postalCode": "93055", "city": "Regensburg", "country": "Deutschland"}
+{
+  "forename": "Gregor",
+  "surname": "Porsch",
+  "phoneNumber": "01590/6140212",
+  "street": "Kirchfeldallee",
+  "houseNumber": "91",
+  "postalCode": "93055",
+  "city": "Regensburg",
+  "country": "Deutschland",
+  "id": 1
+}
